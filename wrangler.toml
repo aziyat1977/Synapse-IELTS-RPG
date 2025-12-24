@@ -1,0 +1,28 @@
+name = "synapse-ielts-rpg"
+main = "backend/main.py"
+compatibility_date = "2024-12-01"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[[env.production.secrets]]
+# Set via: wrangler secret put OPENAI_API_KEY
+# Your OpenAI API key for Whisper + GPT-4o-mini
+
+[build]
+command = "pip install -r backend/requirements.txt"
+
+[env.production.routes]
+pattern = "api.synapse-ielts.com"
+custom_domain = true
+
+# D1 Database (Optional - for player persistence)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "synapse_players"
+# database_id = "<your-d1-database-id>"
+
+# KV Namespace (Optional - for session storage)
+# [[kv_namespaces]]
+# binding = "KV"
+# id = "<your-kv-namespace-id>"
