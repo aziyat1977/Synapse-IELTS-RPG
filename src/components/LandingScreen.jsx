@@ -100,6 +100,28 @@ const LandingScreen = () => {
                     </svg>
                 </motion.div>
 
+                {/* World Map Button */}
+                <motion.button
+                    onClick={() => setGameState('world-map')}
+                    className="relative group px-12 py-6 text-2xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl mb-4 block mx-auto"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                >
+                    <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        animate={{
+                            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                        }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                    />
+                    <span className="relative z-10 tracking-wide">ENTER NEURAL MAP</span>
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/40" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/40" />
+                </motion.button>
+
                 {/* CTA Button */}
                 <motion.button
                     onClick={() => setGameState('diagnostic')}
@@ -124,6 +146,19 @@ const LandingScreen = () => {
                     <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-synapse-cyan" />
                     <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-synapse-cyan" />
                     <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-synapse-cyan" />
+                </motion.button>
+
+                {/* Shop Button */}
+                <motion.button
+                    onClick={() => setGameState('shop')}
+                    className="mt-4 px-8 py-3 text-lg font-semibold text-cyan-400 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 transition-all"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.5 }}
+                >
+                    🛍️ SYNAPSE BAZAAR
                 </motion.button>
 
                 {/* Stats Preview */}

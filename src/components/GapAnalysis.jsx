@@ -1,102 +1,55 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import useGameStore from '../store/gameStore';
+import axios from 'axios';
 
-// Mock AI Analysis Service
-const analyzeAudio = async (audioBlob) => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+// API Configuration
+const API_URL = 'http://localhost:8000/api/analyze-speech';
 
-    // Mock analysis results
-    const mockErrors = [
-        {
-            type: 'Tense Error',
-            category: 'Past Simple',
-            example: 'I go to school yesterday',
-            correction: 'I went to school yesterday',
-            severity: 'high'
-        },
-        {
-            type: 'Article Missing',
-            category: 'Determiners',
-            example: 'He is doctor',
-            correction: 'He is a doctor',
-            severity: 'medium'
-        },
-        {
-            type: 'Subject-Verb Agreement',
-            category: 'Grammar',
-            example: 'She don\'t like coffee',
-            correction: 'She doesn\'t like coffee',
-            severity: 'high'
-        }
-    ];
-
-    const randomError = mockErrors[Math.floor(Math.random() * mockErrors.length)];
-
-    return {
-        bandEstimate: 5.5 + Math.random() * 2,
-        errors: [randomError],
-        enemy: generateEnemy(randomError),
-        gapGraph: {
-            vocabulary: 60 + Math.random() * 30,
-            syntax: 50 + Math.random() * 40,
-            phonetics: 70 + Math.random() * 20,
-            coherence: 65 + Math.random() * 25,
-        }
-    };
-};
-
-const generateEnemy = (error) => {
-    const enemies = {
-        'Tense Error': {
-            name: 'The Chronos Wraith',
-            type: 'Syntax Demon',
-            description: 'A phantom that distorts the flow of time in your sentences',
-            weakness: 'Past Perfect Tense',
-            hp: 100,
-            image: '⏰',
-            color: 'from-purple-600 to-pink-600'
-        },
-        'Article Missing': {
-            name: 'The Void Specter',
-            type: 'Grammar Demon',
-            description: 'An entity that devours determiners from your speech',
-            weakness: 'Definite Articles',
-            hp: 80,
-            image: '👻',
-            color: 'from-blue-600 to-cyan-600'
-        },
-        'Subject-Verb Agreement': {
-            name: 'The Discord Fiend',
-            type: 'Syntax Demon',
-            description: 'A creature that breaks harmony between subjects and verbs',
-            weakness: 'Third Person Singular',
-            hp: 90,
-            image: '😈',
-            color: 'from-red-600 to-orange-600'
-        }
-    };
-
-    return enemies[error.type] || enemies['Tense Error'];
+const convertBlobToFile = (blob) => {
+    return new File([blob], "recording.webm", { type: "audio/webm" });
 };
 
 const GapAnalysis = () => {
     const { recordedAudio, setAnalysisResults, setGameState } = useGameStore();
     const [loading, setLoading] = useState(true);
     const [results, setResults] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const analyze = async () => {
-            if (recordedAudio) {
-                const analysisResults = await analyzeAudio(recordedAudio);
-                setResults(analysisResults);
-                setAnalysisResults(analysisResults);
+            if (!recordedAudio) {
+                // If accessed without audio, likely testing or error, redirect or show mock
+                // For now, redirect to landing
+                // setGameState('landing');
+                // But specifically for dev flow, maybe we want to allow staying here if we mock it? 
+                // Let's assume flow is Landing -> Diagnostic -> GapAnalysis
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                const file = convertBlobToFile(recordedAudio);
+                formData.append('audio', file);
+
+                const response = await axios.post(API_URL, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+                const data = response.data;
+                setResults(data);
+                setAnalysisResults(data);
+                setLoading(false);
+
+            } catch (err) {
+                console.error("Analysis Error:", err);
+                setError("Neural Link Severed. Is the backend running?");
                 setLoading(false);
             }
         };
+
         analyze();
-    }, [recordedAudio]);
+    }, [recordedAudio, setAnalysisResults]);
 
     if (loading) {
         return (
@@ -117,6 +70,25 @@ const GapAnalysis = () => {
             </div>
         );
     }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-synapse-darker text-red-500">
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold mb-4">CRITICAL SYSTEM FAILURE</h2>
+                    <p className="text-xl mb-6">{error}</p>
+                    <button
+                        onClick={() => setGameState('landing')}
+                        className="px-6 py-3 bg-red-900/50 border border-red-500 rounded hover:bg-red-800 transition"
+                    >
+                        Return to Base
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (!results) return null;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-synapse-darker via-synapse-dark to-synapse-darker p-4 py-12">
@@ -208,22 +180,26 @@ const GapAnalysis = () => {
                     transition={{ delay: 1 }}
                 >
                     <h2 className="text-2xl font-bold text-synapse-red mb-6">Detected Errors</h2>
-                    {results.errors.map((error, idx) => (
-                        <div key={idx} className="bg-red-900/20 border border-red-500/30 p-4 rounded-lg mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-red-400 font-bold">{error.type}</span>
-                                <span className="text-xs bg-red-500/30 px-2 py-1 rounded">{error.category}</span>
+                    {results.errors.length > 0 ? (
+                        results.errors.map((error, idx) => (
+                            <div key={idx} className="bg-red-900/20 border border-red-500/30 p-4 rounded-lg mb-4">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-red-400 font-bold">{error.type}</span>
+                                    <span className="text-xs bg-red-500/30 px-2 py-1 rounded">{error.category}</span>
+                                </div>
+                                <div className="mb-2">
+                                    <div className="text-sm text-gray-400 mb-1">Your Speech:</div>
+                                    <div className="text-red-300 line-through">"{error.example}"</div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-400 mb-1">Correction:</div>
+                                    <div className="text-green-400">"{error.correction}"</div>
+                                </div>
                             </div>
-                            <div className="mb-2">
-                                <div className="text-sm text-gray-400 mb-1">Your Speech:</div>
-                                <div className="text-red-300 line-through">"{error.example}"</div>
-                            </div>
-                            <div>
-                                <div className="text-sm text-gray-400 mb-1">Correction:</div>
-                                <div className="text-green-400">"{error.correction}"</div>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <div className="text-gray-400 italic">No significant errors detected. The system has generated advanced training simulations.</div>
+                    )}
                 </motion.div>
 
                 {/* CTA */}

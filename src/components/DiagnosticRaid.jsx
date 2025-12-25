@@ -74,7 +74,11 @@ const DiagnosticRaid = () => {
         };
     }, []);
 
-    const progress = (recordingTime / maxRecordingTime) * 100;
+    // Safety check to prevent NaN values
+    const safeRecordingTime = !isNaN(recordingTime) ? recordingTime : 0;
+    const progress = !isNaN(safeRecordingTime) && maxRecordingTime > 0
+        ? Math.min(Math.max((safeRecordingTime / maxRecordingTime) * 100, 0), 100)
+        : 0;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-synapse-darker via-synapse-dark to-synapse-darker flex items-center justify-center p-4">
@@ -130,10 +134,10 @@ const DiagnosticRaid = () => {
                     {/* Timer Display */}
                     <div className="text-center mb-8">
                         <div className="text-6xl font-['Orbitron'] font-bold text-synapse-cyan">
-                            {Math.floor(recordingTime)}s
+                            {Math.floor(safeRecordingTime)}s
                         </div>
                         <div className="text-gray-400 mt-2">
-                            {maxRecordingTime - Math.floor(recordingTime)}s remaining
+                            {Math.max(0, maxRecordingTime - Math.floor(safeRecordingTime))}s remaining
                         </div>
                     </div>
 

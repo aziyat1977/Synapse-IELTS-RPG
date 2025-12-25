@@ -5,10 +5,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  
   body {
     @apply bg-synapse-darker text-white font-['Exo_2'] overflow-x-hidden;
     margin: 0;
@@ -16,7 +12,12 @@
     min-height: 100vh;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-['Orbitron'] font-bold;
   }
 }
@@ -28,8 +29,8 @@
 
   .glow-text {
     text-shadow: 0 0 10px rgba(139, 92, 246, 0.8),
-                 0 0 20px rgba(139, 92, 246, 0.5),
-                 0 0 30px rgba(139, 92, 246, 0.3);
+      0 0 20px rgba(139, 92, 246, 0.5),
+      0 0 30px rgba(139, 92, 246, 0.3);
   }
 
   .combat-hit {
@@ -37,24 +38,46 @@
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-10px);
+    }
+
+    75% {
+      transform: translateX(10px);
+    }
   }
 
   @keyframes flash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.3;
+    }
   }
 
   .particle-bg {
-    background: radial-gradient(circle, rgba(139,92,246,0.1) 1px, transparent 1px);
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
     animation: particle-float 20s linear infinite;
   }
 
   @keyframes particle-float {
-    0% { background-position: 0 0; }
-    100% { background-position: 50px 50px; }
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 50px 50px;
+    }
   }
 }
