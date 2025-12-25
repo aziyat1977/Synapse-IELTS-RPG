@@ -1,28 +1,14 @@
+# Cloudflare Pages Configuration
 name = "synapse-ielts-rpg"
-main = "backend/main.py"
 compatibility_date = "2024-12-01"
 
-[env.production]
-vars = { ENVIRONMENT = "production" }
-
-[[env.production.secrets]]
-# Set via: wrangler secret put OPENAI_API_KEY
-# Your OpenAI API key for Whisper + GPT-4o-mini
+# Pages-specific configuration
+pages_build_output_dir = "dist"
 
 [build]
-command = "pip install -r backend/requirements.txt"
+command = "npm run build"
 
-[env.production.routes]
-pattern = "api.synapse-ielts.com"
-custom_domain = true
+[build.environment]
+NODE_VERSION = "18"
 
-# D1 Database (Optional - for player persistence)
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "synapse_players"
-# database_id = "<your-d1-database-id>"
-
-# KV Namespace (Optional - for session storage)
-# [[kv_namespaces]]
-# binding = "KV"
-# id = "<your-kv-namespace-id>"
+# Note: Worker configuration is in backend-workers/wrangler.toml
