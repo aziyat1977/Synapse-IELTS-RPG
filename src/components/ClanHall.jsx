@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { Users, Shield, Sword, Scroll, Share2, AlertTriangle } from 'lucide-react';
-import { useGameStore } from '../store/gameStore';
+import useGameStore from '../store/gameStore';
 
 const ClanHall = () => {
     const [clanData, setClanData] = useState(null);

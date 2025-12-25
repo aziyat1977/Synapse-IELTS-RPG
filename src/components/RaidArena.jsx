@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Send, Wifi, WifiOff, Volume2 } from 'lucide-react';
-import { useGameStore } from '../store/gameStore';
+import useGameStore from '../store/gameStore';
 
 const RaidArena = () => {
     // Mock user for prototype; in real app this comes from auth context
@@ -125,10 +125,10 @@ const RaidArena = () => {
                                 <div
                                     key={idx}
                                     className={`w-1/3 p-2 text-center rounded border ${raidState.active_player === raidState.members[idx]
-                                            ? 'bg-cyan-900/40 border-cyan-400 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
-                                            : raidState.active_player && raidState.members.indexOf(raidState.active_player) > idx
-                                                ? 'bg-green-900/20 border-green-800 text-green-700'
-                                                : 'bg-gray-900/40 border-gray-700 text-gray-600'
+                                        ? 'bg-cyan-900/40 border-cyan-400 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
+                                        : raidState.active_player && raidState.members.indexOf(raidState.active_player) > idx
+                                            ? 'bg-green-900/20 border-green-800 text-green-700'
+                                            : 'bg-gray-900/40 border-gray-700 text-gray-600'
                                         }`}
                                 >
                                     <div className="text-xs font-bold uppercase mb-1">{role}</div>
@@ -175,8 +175,8 @@ const RaidArena = () => {
                                 onClick={submitResponse}
                                 disabled={!isMyTurn || !message.trim()}
                                 className={`px-6 rounded-lg flex items-center justify-center transition-all ${isMyTurn && message.trim()
-                                        ? 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg'
-                                        : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+                                    ? 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg'
+                                    : 'bg-gray-800 text-gray-600 cursor-not-allowed'
                                     }`}
                             >
                                 <Send className="w-5 h-5" />
