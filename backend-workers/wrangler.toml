@@ -1,0 +1,35 @@
+name = "synapse-ielts-api"
+main = "src/worker.ts"
+compatibility_date = "2024-12-01"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "synapse_players"
+database_id = "9d5079bf-390d-4dfb-8df0-8d78c92c6e38"
+
+# Durable Objects for WebSocket Raids
+[[durable_objects.bindings]]
+name = "RAID_ROOM"
+class_name = "RaidRoom"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["RaidRoom"]
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+FRONTEND_URL = "https://52f5ce03.synapse-ielts-rpg.pages.dev"
+
+# Node.js compatibility for OpenAI SDK
+compatibility_flags = ["nodejs_compat"]
+
+# Scheduled cron jobs
+[[triggers.crons]]
+# Sunday midnight UTC for raid triggers
+cron = "0 0 * * 0"
+
+[[triggers.crons]]
+# Every 5 minutes for Andisha notifications
+cron = "*/5 * * * *"
